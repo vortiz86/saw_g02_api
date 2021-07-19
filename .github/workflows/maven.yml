@@ -34,6 +34,6 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "back-wiki-g03" #Must be unique in Heroku
           heroku_email: "jelabra@gmail.com"
-          usedocker: true
+          usedocker: false
           docker_build_args: |
             API_URI
