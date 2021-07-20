@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saw.airport.entities.Airport;
+import com.saw.airport.entities.Country;
 import com.saw.airport.service.ApiService;
 
 @RestController
@@ -24,6 +26,11 @@ public class AirportRestController {
 	@GetMapping("/airports")
 	public List<Airport> getAirpots() {
 		return apiService.getAllAirPorts();
+	}
+	
+	@GetMapping("/countries/{id}")
+	public Country getCountry(@PathVariable String id) {
+		return apiService.getCountryStatus(id);
 	}
 
 }
