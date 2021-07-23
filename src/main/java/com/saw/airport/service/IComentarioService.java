@@ -12,4 +12,8 @@ public interface IComentarioService {
 	
 	public Comentario save(Comentario comentario);
 
+	public Comentario findById(Long id);
+	
+	public void delete(Long id);
+
 }

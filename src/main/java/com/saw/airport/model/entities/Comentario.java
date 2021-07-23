@@ -27,6 +27,10 @@ public class Comentario {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
 	
+	@Column(name = "update_at")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date update_at;
+	
 	@NotEmpty(message = "no puede estar vacío")
 	@Size(min = 4, message = "debe tener al menos 4 caracteres")
 	@Column(nullable = false)
@@ -82,9 +86,18 @@ public class Comentario {
 		return aeropuerto;
 	}
 
-	public void setAirport(String aeropuerto) {
+	public Date getUpdate_at() {
+		return update_at;
+	}
+
+	public void setUpdate_at(Date update_at) {
+		this.update_at = update_at;
+	}
+
+	public void setAeropuerto(String aeropuerto) {
 		this.aeropuerto = aeropuerto;
 	}
+	
 	
 	
 

@@ -1,6 +1,6 @@
 package com.saw.airport.controllers;
 
-
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +14,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saw.airport.entities.Airport;
@@ -28,6 +31,7 @@ import com.saw.airport.model.entities.Comentario;
 import com.saw.airport.service.ApiService;
 import com.saw.airport.service.IComentarioServiceImpl;
 import com.saw.airport.service.WikiDataSparqlService;
+
 
 @RestController
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST })
@@ -75,15 +79,12 @@ public class AirportRestController {
 		Map<String, Object> response = new HashMap<>();
 
 		if (result.hasErrors()) {
-
 			List<String> errors = result.getFieldErrors().stream()
 					.map(err -> "El campo '" + err.getField() + "' " + err.getDefaultMessage())
 					.collect(Collectors.toList());
-
 			response.put("errors", errors);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
 		}
-
 		try {
 			comentarioService.save(comentario);
 		} catch (DataAccessException e) {
@@ -91,10 +92,23 @@ public class AirportRestController {
 			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 		response.put("mensaje", "Comentario creado con éxito!");
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
-
+	}
+	
+	@PutMapping("/comment/{id}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Comentario update(@RequestBody Comentario comentario, @PathVariable Long id) {
+		Comentario comentarioActual = comentarioService.findById(id);
+		comentarioActual.setComentario(comentario.getComentario());
+		comentarioActual.setUpdate_at(new Date());
+		return comentarioService.save(comentarioActual);
+	}
+	
+	@DeleteMapping("/comment/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable Long id) {
+		comentarioService.delete(id);
 	}
 
 }
