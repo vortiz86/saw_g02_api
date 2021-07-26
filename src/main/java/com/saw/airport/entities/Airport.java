@@ -11,6 +11,7 @@ public class Airport {
 	private Double latitude;
 	private Double longitude;
 	private boolean active;
+	private String countryCode;
 
 	public String getIata() {
 		return iata;
@@ -59,5 +60,15 @@ public class Airport {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+	
+	
 
 }
