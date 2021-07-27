@@ -52,6 +52,17 @@ public class AirportRestController {
 	public List<Airport> getAirpots() {
 		return apiService.getAllAirPorts();
 	}
+	
+	@GetMapping("/airports/{id}")
+	public ResponseEntity<?> getAirpotById(@PathVariable String id) {
+		Map<String, Object> response = new HashMap<>();
+		Airport airport = apiService.getAirPortById(id);
+		if (airport == null) {
+			response.put("mensaje", "Codigo aeropuerto: ".concat(id.toString().concat(" no existe ")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(airport, HttpStatus.OK);
+	}
 
 	@GetMapping("/countries/{id}")
 	public ResponseEntity<?> getCountry(@PathVariable String id) {

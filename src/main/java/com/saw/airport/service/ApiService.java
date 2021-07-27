@@ -22,7 +22,7 @@ public class ApiService {
 
 	@Value("${URL_API_AIRPORTS}")
 	private String URL_API_AIRPORTS;
-	
+
 	@Value("${URL_API_COUNTRIES}")
 	private String URL_API_COUNTRIES;
 
@@ -32,20 +32,29 @@ public class ApiService {
 		airports.removeIf(o -> o.getIata() == "");
 		return airports;
 	}
-	
-	
+
 	public Country getCountryStatus(String code) {
-		ResponseEntity<Country []> countries = restTemplate.getForEntity(URL_API_COUNTRIES, Country[].class);
+		ResponseEntity<Country[]> countries = restTemplate.getForEntity(URL_API_COUNTRIES, Country[].class);
 		Country[] countriesArray = countries.getBody();
 		List<Country> countriesList = Arrays.asList(countriesArray);
 		for (Country country : countriesList) {
-			if(country.getCountryCode().contentEquals(code.toUpperCase())) {
+			if (country.getCountryCode().contentEquals(code.toUpperCase())) {
 				return country;
 			}
-			
 		}
-		
 		return null;
 	}
 
+	public Airport getAirPortById(String id) {
+		try {
+			for (Airport airport : this.getAllAirPorts()) {
+				if (airport.getIata().contentEquals(id.toUpperCase()))
+					return airport;
+			}
+			return null;
+
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }
