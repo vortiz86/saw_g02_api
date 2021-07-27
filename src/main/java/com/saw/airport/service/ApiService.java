@@ -26,17 +26,25 @@ public class ApiService {
 	@Value("${URL_API_COUNTRIES}")
 	private String URL_API_COUNTRIES;
 
+	private List<Airport> airports;
+	private List<Country> countriesList;
+
 	@Cacheable(cacheNames = "airports")
 	public List<Airport> getAllAirPorts() {
-		List<Airport> airports = restTemplate.getForObject(URL_API_AIRPORTS, AirportInfoResponse.class).getAirports();
+		if (airports == null) {
+			airports = restTemplate.getForObject(URL_API_AIRPORTS, AirportInfoResponse.class).getAirports();
+		}
 		airports.removeIf(o -> o.getIata() == "");
+		airports.removeIf(o -> o.getIata() == null);
 		return airports;
 	}
 
 	public Country getCountryStatus(String code) {
-		ResponseEntity<Country[]> countries = restTemplate.getForEntity(URL_API_COUNTRIES, Country[].class);
-		Country[] countriesArray = countries.getBody();
-		List<Country> countriesList = Arrays.asList(countriesArray);
+		if (countriesList == null) {
+			ResponseEntity<Country[]> countries = restTemplate.getForEntity(URL_API_COUNTRIES, Country[].class);
+			Country[] countriesArray = countries.getBody();
+			countriesList = Arrays.asList(countriesArray);
+		}
 		for (Country country : countriesList) {
 			if (country.getCountryCode().contentEquals(code.toUpperCase())) {
 				return country;
@@ -46,15 +54,14 @@ public class ApiService {
 	}
 
 	public Airport getAirPortById(String id) {
-		try {
-			for (Airport airport : this.getAllAirPorts()) {
-				if (airport.getIata().contentEquals(id.toUpperCase()))
-					return airport;
-			}
-			return null;
-
-		} catch (Exception e) {
-			return null;
+		if (airports == null) {
+			airports = getAllAirPorts();
 		}
+		for (Airport airport : airports) {
+			if (airport.getIata() != null && airport.getIata().equalsIgnoreCase(id.toUpperCase())) {
+				return airport;
+			}
+		}
+		return null;
 	}
 }
