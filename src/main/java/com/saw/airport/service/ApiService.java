@@ -33,9 +33,9 @@ public class ApiService {
 	public List<Airport> getAllAirPorts() {
 		if (airports == null) {
 			airports = restTemplate.getForObject(URL_API_AIRPORTS, AirportInfoResponse.class).getAirports();
+			airports.removeIf(o -> o.getIata() == "");
+			airports.removeIf(o -> o.getIata() == null);
 		}
-		airports.removeIf(o -> o.getIata() == "");
-		airports.removeIf(o -> o.getIata() == null);
 		return airports;
 	}
 
