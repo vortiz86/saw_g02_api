@@ -34,7 +34,7 @@ import com.saw.airport.service.WikiDataSparqlService;
 
 
 @RestController
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST })
+@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RequestMapping("/api")
 
 public class AirportRestController {
@@ -78,6 +78,11 @@ public class AirportRestController {
 	@GetMapping("/wikidata/{id}")
 	public Object getWikiData(@PathVariable String id) {
 		return wikidata.getDataWiki(id);
+	}
+	
+	@GetMapping("/wikidata/{id}/rdf")
+	public Object getWikiDataRdf(@PathVariable String id) {
+		return wikidata.getRdfResponse(id);
 	}
 
 	@GetMapping("/comment/{id}")

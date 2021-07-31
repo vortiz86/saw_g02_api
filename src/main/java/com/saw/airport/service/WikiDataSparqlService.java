@@ -5,10 +5,13 @@ import java.util.Collections;
 
 import org.eclipse.rdf4j.query.resultio.sparqljson.SPARQLResultsJSONWriter;
 import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Service
 public class WikiDataSparqlService {
@@ -21,6 +24,16 @@ public class WikiDataSparqlService {
 	
 	@Value("${WIKIDATA_QUERY_PART2}")
 	private String queryPart2;
+	
+	@Value("${WIKIDATA_RDF_QUERY}")
+	private String WIKIDATA_RDF_QUERY;
+	
+	@Value("${WIKIDATA_RDF_EXT}")
+	private String WIKIDATA_RDF_EXT;
+	
+	
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	public Object getDataWiki(String code) {
 		
@@ -38,13 +51,21 @@ public class WikiDataSparqlService {
 		try {
 			repo.getConnection().prepareTupleQuery(querySelect).evaluate(new SPARQLResultsJSONWriter(bao));			
 			object = mapper.readValue(new String(bao.toString()), Object.class);
-
-		} catch (Exception exception) {
+					} catch (Exception exception) {
 			exception.printStackTrace();
 		}
+		
 
 		return object;
 
+	}
+	
+	
+	public Object getRdfResponse(String code) {		
+	//	ArrayList al1 = (ArrayList) getDataWiki(code);
+		Object rdf = new Object();
+		rdf = restTemplate.getForEntity(WIKIDATA_RDF_QUERY+code+WIKIDATA_RDF_EXT, Object.class);
+		return rdf;
 	}
 
 }
